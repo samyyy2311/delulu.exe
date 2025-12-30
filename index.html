@@ -170,6 +170,14 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
+    // --- NEW: PRESS ENTER TO SUBMIT FIX ---
+    document.getElementById('inputRes').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevents making a new line
+            judgeResolution();  // Runs the function
+        }
+    });
+
     function judgeResolution() {
         const input = document.getElementById('inputRes').value.toLowerCase();
         const loader = document.getElementById('loader');
@@ -240,7 +248,7 @@
                 fireConfetti = true;
             }
 
-            // MONEY (UPDATED: NOW STATUS-OPTIMISTIC / YELLOW)
+            // MONEY
             else if (input.match(/save|money|budget|spend|invest/)) {
                 verdict = "CHALLENGING";
                 style = "status-optimistic"; 
