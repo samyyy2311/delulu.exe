@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Delulu.exe</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>">
+
+    <style>
+        /* --- NEO-BRUTALIST THEME --- */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+        :root {
+            --bg: #a5b4fc;
+            --card: #fff;
+            --border: #000;
+            --shadow: 8px 8px 0px 0px #000;
+            --accent-yellow: #facc15;
+            --accent-pink: #fb7185;
+            --accent-green: #86efac;
+            --accent-red: #fca5a5;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--bg);
+            background-image: radial-gradient(#000 1px, transparent 1px);
+            background-size: 24px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            background: var(--card);
+            padding: 2.5rem;
+            border: 4px solid var(--border);
+            box-shadow: var(--shadow);
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+        }
+
+        .tape {
+            background-color: rgba(255,255,255,0.4);
+            width: 150px;
+            height: 35px;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            border: 2px solid rgba(0,0,0,0.1);
+            backdrop-filter: blur(2px);
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-top: 0;
+            background: var(--accent-yellow);
+            display: inline-block;
+            padding: 5px 10px;
+            border: 3px solid var(--border);
+            transform: rotate(-2deg);
+            margin-bottom: 20px;
+        }
+
+        p.subtitle {
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            background: #f8fafc;
+            border: 3px solid var(--border);
+            color: #000;
+            padding: 1rem;
+            font-size: 1rem;
+            resize: none;
+            box-sizing: border-box;
+            font-family: 'Space Mono', monospace;
+            border-radius: 0; 
+            margin-bottom: 20px;
+        }
+        textarea:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: 4px 4px 0px 0px var(--border);
+            transform: translate(-2px, -2px);
+        }
+
+        button {
+            background: var(--border);
+            color: #fff;
+            border: 3px solid var(--border);
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        button:hover {
+            background: var(--accent-pink);
+            color: #000;
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px 0px #000;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border: 3px solid var(--border);
+            background: #fff;
+            display: none;
+            box-shadow: 6px 6px 0px 0px #ddd;
+        }
+
+        .verdict-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 2px solid var(--border);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .status-delusional { background: var(--accent-red); } 
+        .status-optimistic { background: var(--accent-yellow); } 
+        .status-achievable { background: var(--accent-green); } 
+
+        .ai-comment { font-size: 1rem; line-height: 1.5; color: #000; }
+        
+        .loader { display: none; font-weight: bold; font-size: 1.2rem; text-align: center; margin-top: 20px; animation: blink 0.5s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tape"></div>
+    <h1>🔮 REALITY CHECK</h1>
+    <p class="subtitle">INPUT YOUR 2026 RESOLUTION. <br>I HAVE OPINIONS.</p>
+    
+    <textarea id="inputRes" rows="4" placeholder="TYPE HERE..."></textarea>
+    
+    <button onclick="judgeResolution()">RUN_SIMULATION.EXE</button>
+    <div class="loader" id="loader">CALCULATING...</div>
+
+    <div class="result-box" id="resultBox">
+        <span class="verdict-badge" id="badge"></span>
+        <p class="ai-comment" id="comment"></p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+    function judgeResolution() {
+        const input = document.getElementById('inputRes').value.toLowerCase();
+        const loader = document.getElementById('loader');
+        const resultBox = document.getElementById('resultBox');
+        const badge = document.getElementById('badge');
+        const comment = document.getElementById('comment');
+
+        if (!input) return alert("ERROR: INPUT REQUIRED");
+
+        resultBox.style.display = 'none';
+        loader.style.display = 'block';
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+            resultBox.style.display = 'block';
+            
+            let verdict, style, text;
+            let fireConfetti = false;
+
+            // --- 1. CRITICAL SAFETY FILTER ---
+            if (input.match(/die|death|kill|suicide|hurt|end it/)) {
+                verdict = "SYSTEM MESSAGE";
+                style = "status-delusional"; 
+                text = "I am a simple bot designed for jokes, not crises. You matter. Please reach out to a friend or professional. 2026 needs you in it.";
+            }
+            else if (input.match(/give up|quit|fail|hopeless|sad|depressed|survive|exist/)) {
+                verdict = "ONE DAY AT A TIME";
+                style = "status-achievable";
+                text = "Hey, 2025 was tough. If your only goal is to survive or just exist, that is valid. Be kind to yourself this year.";
+            }
+
+            // --- 2. THE "EVERY DAY" TRAP ---
+            else if (input.includes("every day") || input.includes("everyday") || input.includes("daily")) {
+                verdict = "BURNOUT DETECTED";
+                style = "status-delusional";
+                text = "Doing anything 'every day' is the fastest way to quit by January 12th. Professional athletes take rest days. You should too. Try '3 times a week'.";
+            }
+
+            // --- 3. ACTIVITY LOGIC ---
+
+            // RUNNING
+            else if (input.match(/run|jog|marathon|10k|5k|km|sprint/)) {
+                verdict = "KNEE PAIN PENDING";
+                style = "status-optimistic";
+                text = "Running is free, but knee replacement surgery is expensive. Ensure you are running for health, and not just running away from your problems.";
+            }
+
+            // GYM
+            else if (input.match(/gym|lift|weights|muscle|abs|pushups/)) {
+                verdict = "SUSPICIOUS";
+                style = "status-optimistic";
+                text = "Buying the membership = 100% complete. Going to the gym = 5% complete. I admire the financial donation you are about to make to the gym owner.";
+            }
+
+            // TECH & CODING
+            else if (input.match(/cod|python|js|react|ai|hackathon|dev|tech|data|cloud/)) {
+                verdict = "APPROVED";
+                style = "status-achievable";
+                text = "Finally, a resolution with ROI. Skills are the only thing inflation can't ruin. Just avoid 'Tutorial Hell'—build something real.";
+                fireConfetti = true;
+            }
+
+            // GENERAL LEARNING
+            else if (input.match(/learn|study|degree|course|read|book|cook|skill|language/)) {
+                verdict = "WHOLESOME";
+                style = "status-achievable";
+                text = "Acquiring new data is always approved. Just make sure you actually apply the skill, rather than just hoarding the textbooks.";
+                fireConfetti = true;
+            }
+
+            // MONEY (UPDATED: NOW STATUS-OPTIMISTIC / YELLOW)
+            else if (input.match(/save|money|budget|spend|invest/)) {
+                verdict = "CHALLENGING";
+                style = "status-optimistic"; 
+                text = "Your bank account supports this goal, but your emotional support online shopping habits do not. Good luck fighting capitalism.";
+            }
+
+            // RELATIONSHIPS
+            else if (input.match(/date|love|partner|\bex\b|boyfriend|girlfriend/)) {
+                verdict = "FOCUS ON YOU";
+                style = "status-achievable";
+                text = "2026 is for character development. If you upgrade your own character stats, Player 2 will eventually join the game.";
+            }
+
+            // SOCIAL MEDIA
+            else if (input.match(/social|insta|phone|screen|scroll|tiktok/)) {
+                verdict = "IRONIC";
+                style = "status-optimistic";
+                text = "You are typing this on a screen, promising to look at screens less. The algorithm is watching. Try 'Delete the app' instead.";
+            }
+
+            // FALLBACK
+            else {
+                verdict = "MYSTERIOUS";
+                style = "status-achievable";
+                text = "This is specific enough that I can't roast it. If you stick to this for more than 2 weeks, you are already in the top 1%. Go for it.";
+                fireConfetti = true;
+            }
+
+            badge.className = "verdict-badge " + style;
+            badge.innerText = "VERDICT: " + verdict;
+            comment.innerText = text;
+
+            if (fireConfetti) {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#000', '#facc15', '#fb7185']
+                });
+            }
+
+        }, 800);
+    }
+</script>
+
+</body>
+</html>
