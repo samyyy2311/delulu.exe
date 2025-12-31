@@ -36,7 +36,7 @@
             padding: 20px;
         }
         
-        .container {
+        #app-container {
             background: var(--card);
             padding: 2.5rem;
             border: 4px solid var(--border);
@@ -99,7 +99,8 @@
             transform: translate(-2px, -2px);
         }
 
-        button {
+        /* MAIN BUTTON STYLE */
+        .main-btn {
             background: var(--border);
             color: #fff;
             border: 3px solid var(--border);
@@ -110,9 +111,10 @@
             width: 100%;
             text-transform: uppercase;
             font-family: 'Space Mono', monospace;
+            margin-bottom: 10px;
         }
         
-        button:hover {
+        .main-btn:hover {
             background: var(--accent-pink);
             color: #000;
             transform: translate(-2px, -2px);
@@ -147,37 +149,76 @@
         .loader { display: none; font-weight: bold; font-size: 1.2rem; text-align: center; margin-top: 20px; animation: blink 0.5s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
+        /* --- ACTION BUTTONS CONTAINER --- */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            font-family: 'Space Mono', monospace;
+            font-weight: bold;
+            font-size: 0.8rem;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            text-transform: uppercase;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        /* Specific Colors for Actions */
+        .btn-share { background: var(--accent-pink); }
+        .btn-save { background: var(--accent-green); }
+        .btn-retry { background: #fff; border: 2px dashed #000; width: 100%; margin-top: 10px; }
+
+        .action-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 3px 3px 0px 0px #000;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="app-container">
     <div class="tape"></div>
     <h1>🔮 REALITY CHECK</h1>
     <p class="subtitle">INPUT YOUR 2026 RESOLUTION. <br>I HAVE OPINIONS.</p>
     
     <textarea id="inputRes" rows="4" placeholder="TYPE HERE..."></textarea>
     
-    <button onclick="judgeResolution()">RUN_SIMULATION.EXE</button>
+    <button class="main-btn" onclick="judgeResolution()">RUN_SIMULATION.EXE</button>
     <div class="loader" id="loader">CALCULATING...</div>
 
     <div class="result-box" id="resultBox">
         <span class="verdict-badge" id="badge"></span>
         <p class="ai-comment" id="comment"></p>
+
+        <div class="action-buttons">
+            <button class="action-btn btn-share" onclick="shareResult()">SHARE_VERDICT</button>
+            <button class="action-btn btn-save" onclick="saveReceipt()">SAVE_EVIDENCE</button>
+            <button class="action-btn btn-retry" onclick="resetApp()">NEW_SESSION</button>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
-    // --- NEW: PRESS ENTER TO SUBMIT FIX ---
+    // --- 1. ENTER KEY LISTENER ---
     document.getElementById('inputRes').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevents making a new line
-            judgeResolution();  // Runs the function
+            e.preventDefault();
+            judgeResolution();
         }
     });
 
+    // --- 2. MAIN LOGIC ENGINE ---
     function judgeResolution() {
         const input = document.getElementById('inputRes').value.toLowerCase();
         const loader = document.getElementById('loader');
@@ -188,6 +229,15 @@
         if (!input) return alert("ERROR: INPUT REQUIRED");
 
         resultBox.style.display = 'none';
+        
+        // RANDOMIZED LOADING MESSAGES
+        const loadingMessages = [
+            "CALCULATING PROBABILITY...",
+            "ANALYZING DELUSIONS...",
+            "RUNNING DIAGNOSTICS...",
+            "CHECKING DATABASE..."
+        ];
+        loader.innerText = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
         loader.style.display = 'block';
 
         setTimeout(() => {
@@ -197,88 +247,193 @@
             let verdict, style, text;
             let fireConfetti = false;
 
-            // --- 1. CRITICAL SAFETY FILTER ---
-            if (input.match(/die|death|kill|suicide|hurt|end it/)) {
-                verdict = "SYSTEM MESSAGE";
+            // --- PRIORITY 1: CRITICAL SAFETY FILTER ---
+            if (input.match(/\b(die|death|kill myself|suicide|hurt myself|end my life)\b/)) {
+                verdict = "SYSTEM_MESSAGE";
                 style = "status-delusional"; 
                 text = "I am a simple bot designed for jokes, not crises. You matter. Please reach out to a friend or professional. 2026 needs you in it.";
             }
-            else if (input.match(/give up|quit|fail|hopeless|sad|depressed|survive|exist/)) {
-                verdict = "ONE DAY AT A TIME";
+
+            // --- PRIORITY 2: ALCOHOL ---
+            else if (input.match(/\balcohol\b|drinking|sober|sobriety|quit drinking|dry january/)) {
+                verdict = "LIVER_RECOVERY_MODE";
                 style = "status-achievable";
-                text = "Hey, 2025 was tough. If your only goal is to survive or just exist, that is valid. Be kind to yourself this year.";
+                text = "Your liver is sending thank-you notes. Your wallet agrees. This is the rare resolution where future you will genuinely thank present you.";
+                fireConfetti = true;
             }
 
-            // --- 2. THE "EVERY DAY" TRAP ---
+            // --- PRIORITY 3: SMOKING / VAPING ---
+            else if (input.match(/smoke|smoking|vape|vaping|nicotine|cigarette/)) {
+                verdict = "LUNG_CAPACITY_RISING";
+                style = "status-achievable";
+                text = "Finally. Your lungs are grateful. Your wallet is grateful. This is the rare resolution that's actually non-negotiable. You got this.";
+                fireConfetti = true;
+            }
+
+            // --- PRIORITY 4: STARTUP & BUSINESS (Expanded) ---
+            else if (input.match(/startup|business|entrepreneur|founder|ceo|saas|pitch deck|unicorn|shark tank|funding/)) {
+                verdict = "FOUNDER_SYNDROME";
+                style = "status-optimistic";
+                text = "You have a 'concept' in a Google Doc, not a business. 90% of startups fail, and the other 10% are just 3 people in a Slack channel pretending to work. Validate your idea first.";
+            }
+
+            // --- PRIORITY 5: COMPETITIVE EXAMS ---
+            else if (input.match(/jee|neet|iit|aiims|upsc|gate|cat exam|crack|rank|competitive exam|physics wallah|allen/)) {
+                verdict = "CANNON_EVENT_LOADING";
+                style = "status-achievable";
+                text = "Ah, the Great Academic Rat Race. Remember: An exam result is a piece of paper, not a death sentence. But say goodbye to your social life and sleep schedule. Valid, but painful.";
+            }
+
+            // --- PRIORITY 6: CGPA / GRADES ---
+            else if (input.match(/cgpa|gpa|marks|grades|topper|top the class|9 cgpa|10 cgpa|semester|90%|95%/)) {
+                verdict = "ACADEMIC_VALIDATION";
+                style = "status-optimistic";
+                text = "Your 10 CGPA will look great on a resume that a recruiter scans for 6 seconds. Just make sure you develop a personality alongside those grades. High grades don't cure social awkwardness.";
+            }
+            
+            // --- PRIORITY 6.5: META / SELF AWARENESS (Updated Regex) ---
+            else if (input.match(/delete (this |the |my )?app|uninstall|close tab|delete delulu|alt f4/)) {
+                verdict = "ERROR_404_REALITY";
+                style = "status-delusional";
+                text = "Nice try. You cannot 'delete' a website, you can only close the tab. But I respect the attempt to silence the truth.";
+            }
+            else if (input.match(/delulu|delusional|solulu/)) {
+                verdict = "SYSTEM_RECURSION";
+                style = "status-optimistic";
+                text = "You are trying to run the software *inside* the software. Congratulations, you have broken the matrix. 2026 is yours.";
+            }
+            else if (input.match(/nothing|no resolution|none|idk/)) {
+                verdict = "SYSTEM_HACKED";
+                style = "status-achievable";
+                text = "No goals = No failure. You have successfully outsmarted the rat race. Enjoy your year of zero expectations.";
+            }
+            else if (input.match(/be happy|happiness|find peace|joy/)) {
+                verdict = "ERROR_404_SPECIFICITY";
+                style = "status-optimistic";
+                text = "Happiness is a byproduct, not a goal. This is like setting a resolution to 'be taller'. Pick a real habit, you vague philosopher.";
+            }
+
+            // --- PRIORITY 7: DEPRESSION / GIVING UP (Fixed: Exceptions for Job/Work) ---
+            else if (input.match(/give up|quit|fail|hopeless|sad|depressed|survive|exist/) && !input.match(/smoke|vape|alcohol|sugar|social|phone|media|job|work|career/)) {
+                verdict = "SYSTEM_PAUSE";
+                style = "status-achievable";
+                text = "Roast mode paused. If 2025 broke you, survival IS the goal. One day at a time is valid. You're doing better than you think.";
+            }
+            
+            // --- PRIORITY 8: THE DAILY TRAP ---
             else if (input.includes("every day") || input.includes("everyday") || input.includes("daily")) {
-                verdict = "BURNOUT DETECTED";
+                verdict = "BURNOUT_DETECTED";
                 style = "status-delusional";
                 text = "Doing anything 'every day' is the fastest way to quit by January 12th. Professional athletes take rest days. You should too. Try '3 times a week'.";
             }
 
-            // --- 3. ACTIVITY LOGIC ---
+            // --- CATEGORY: WAKE UP EARLY ---
+            else if (input.match(/5am|6am|7am|wake up|early|morning|alarm/)) {
+                verdict = "SLEEP_DEBT_DETECTED";
+                style = "status-delusional";
+                text = "You'll feel like a god at 6 AM and a zombie by 2 PM. You aren't gaining more hours in the day; you're just shifting your scrolling time to before the sun comes up.";
+            }
 
-            // RUNNING
+            // --- CATEGORY: DIET & WATER ---
+            else if (input.match(/diet|keto|sugar|vegan|water|hydrate|food|eat|weight|loss/)) {
+                verdict = "CALORIE_DEFICIT_WARNING";
+                style = "status-optimistic";
+                text = "Hydration is key, but a ₹2000 water bottle isn't a personality trait. Also, we both know that 'No Sugar' rule expires the second you see a birthday cake.";
+            }
+
+            // --- CATEGORY: TRAVEL ---
+            else if (input.match(/travel|trip|vacation|bali|europe|hike|world|explore/)) {
+                verdict = "ESCAPISM_DETECTED";
+                style = "status-optimistic";
+                text = "Travel is great. Just make sure you're packing actual experiences, not just 50 different outfits for the Instagram photos. Be present, not posted.";
+            }
+
+            // --- CATEGORY: FITNESS & GYM ---
+            else if (input.match(/gym|lift|weights|muscle|abs|pushups|crossfit|yoga|pilates|zumba|bulk|cut|creatine|protein/)) {
+                verdict = "MEMBERSHIP_UNUSED";
+                style = "status-optimistic";
+                text = "January gym = packed. February gym = ghost town. Your membership card will work great as a bookmark for the self-help book you also won't finish.";
+            }
+
+            // --- CATEGORY: RUNNING ---
             else if (input.match(/run|jog|marathon|10k|5k|km|sprint/)) {
-                verdict = "KNEE PAIN PENDING";
+                verdict = "KNEE_PAIN_PENDING";
                 style = "status-optimistic";
                 text = "Running is free, but knee replacement surgery is expensive. Ensure you are running for health, and not just running away from your problems.";
             }
 
-            // GYM
-            else if (input.match(/gym|lift|weights|muscle|abs|pushups/)) {
-                verdict = "SUSPICIOUS";
-                style = "status-optimistic";
-                text = "Buying the membership = 100% complete. Going to the gym = 5% complete. I admire the financial donation you are about to make to the gym owner.";
-            }
-
-            // TECH & CODING
-            else if (input.match(/cod|python|js|react|ai|hackathon|dev|tech|data|cloud/)) {
-                verdict = "APPROVED";
+            // --- CATEGORY: TECH & CRYPTO ---
+            else if (input.match(/code|coding|python|javascript|js|react|ai|hackathon|dev|tech|data|cloud|web3|crypto|bitcoin|blockchain|full stack|programming|software|machine learning|ml|api/)) {
+                verdict = "ROI_CONFIRMED";
                 style = "status-achievable";
-                text = "Finally, a resolution with ROI. Skills are the only thing inflation can't ruin. Just avoid 'Tutorial Hell'—build something real.";
+                text = "Finally, a resolution with actual ROI. Skills survive inflation. Just don't get stuck watching tutorials forever—build something broken and learn from that.";
                 fireConfetti = true;
             }
 
-            // GENERAL LEARNING
-            else if (input.match(/learn|study|degree|course|read|book|cook|skill|language/)) {
+            // --- CATEGORY: READING (Books) ---
+            else if (input.match(/read|book|novel|library|kindle|pages/)) {
+                verdict = "SHELF_DECORATION";
+                style = "status-optimistic";
+                text = "Reading is valid. Just make sure you're actually reading them, not just buying them to look intellectual on Zoom. One finished book beats ten half-started ones.";
+            }
+
+            // --- CATEGORY: GENERAL LEARNING (Expanded) ---
+            else if (input.match(/learn|study|degree|course|cook|skill|language|spanish|french|german/)) {
                 verdict = "WHOLESOME";
                 style = "status-achievable";
                 text = "Acquiring new data is always approved. Just make sure you actually apply the skill, rather than just hoarding the textbooks.";
                 fireConfetti = true;
             }
 
-            // MONEY
-            else if (input.match(/save|money|budget|spend|invest/)) {
+            // --- CATEGORY: MONEY & BUSINESS ---
+            else if (input.match(/\bsave\s*(\$|₹|rs|\d|money)|budget|spend|invest|rich|millionaire|hustle|stocks|dropshipping|financial/)) {
                 verdict = "CHALLENGING";
                 style = "status-optimistic"; 
                 text = "Your bank account supports this goal, but your emotional support online shopping habits do not. Good luck fighting capitalism.";
             }
 
-            // RELATIONSHIPS
-            else if (input.match(/date|love|partner|\bex\b|boyfriend|girlfriend/)) {
-                verdict = "FOCUS ON YOU";
+            // --- CATEGORY: SELF CARE / FOCUS ON ME ---
+            else if (input.match(/focus on (myself|me|you)|work on (myself|me)|self care|character development|mental health|healing|therapy/)) {
+                verdict = "MAIN_CHARACTER_ENERGY";
                 style = "status-achievable";
-                text = "2026 is for character development. If you upgrade your own character stats, Player 2 will eventually join the game.";
+                text = "Finally. You are listening. Upgrade your stats, clear your cache, and restart. Just don't let 'self-care' turn into 'spending rent money on scented candles'.";
+                fireConfetti = true;
             }
 
-            // SOCIAL MEDIA
-            else if (input.match(/social|insta|phone|screen|scroll|tiktok/)) {
-                verdict = "IRONIC";
+            // --- CATEGORY: RELATIONSHIPS ---
+            else if (input.match(/date|dating|love|partner|my ex|boyfriend|girlfriend|marriage|wedding|propose|tinder|bumble|hinge|relationship/)) {
+                verdict = "FOCUS_ON_YOU";
+                style = "status-achievable";
+                text = "2026 is for character development. Work on your own stats first—confidence, stability, hobbies. Player 2 joins when you're already winning.";
+            }
+
+            // --- CATEGORY: SOCIAL MEDIA (SPLIT) ---
+            
+            // 1. Specific Actions (Delete/Quit) -> POSITIVE
+            else if (input.match(/(delete|quit|uninstall|remove) (insta|gram|tiktok|facebook|twitter|x |snapchat|social|app)/)) {
+                verdict = "DOPAMINE_DETOX";
+                style = "status-achievable";
+                text = "Deleting the slot machine in your pocket? Bold move. Your attention span might actually recover. Enjoy the silence.";
+                fireConfetti = true;
+            }
+
+            // 2. Generic Usage (Scroll less/Screen time) -> IRONIC
+            else if (input.match(/social|insta|phone|screen|scroll|tiktok|reels|youtube|content|influencer|digital detox|screen time|\bapp\b/)) {
+                verdict = "IRONIC_DETECTED";
                 style = "status-optimistic";
                 text = "You are typing this on a screen, promising to look at screens less. The algorithm is watching. Try 'Delete the app' instead.";
             }
 
-            // FALLBACK
+            // --- FALLBACK ---
             else {
-                verdict = "MYSTERIOUS";
+                verdict = "INSUFFICIENT_DATA";
                 style = "status-achievable";
-                text = "This is specific enough that I can't roast it. If you stick to this for more than 2 weeks, you are already in the top 1%. Go for it.";
-                fireConfetti = true;
+                text = "Your resolution is too specific for my pattern detector. Either you've thought this through, or you're hiding something. Either way, if you last 2 weeks you're in the top 1%.";
+                fireConfetti = false;
             }
 
             badge.className = "verdict-badge " + style;
-            badge.innerText = "VERDICT: " + verdict;
+            badge.innerText = "VERDICT: " + verdict; 
             comment.innerText = text;
 
             if (fireConfetti) {
@@ -291,6 +446,45 @@
             }
 
         }, 800);
+    }
+
+    // --- 3. SHARE FUNCTION ---
+    function shareResult() {
+        const text = "🔮 Just got roasted by Delulu.exe! Check your 2026 Reality Score here: " + window.location.href;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'Delulu.exe Reality Check',
+                text: text,
+                url: window.location.href,
+            }).catch(console.error);
+        } else {
+            navigator.clipboard.writeText(text);
+            alert("URL copied to clipboard!");
+        }
+    }
+
+    // --- 4. SAVE RECEIPT FUNCTION ---
+    function saveReceipt() {
+        const element = document.getElementById("app-container");
+        const btns = document.querySelector(".action-buttons");
+        btns.style.display = 'none'; // Hide buttons
+
+        html2canvas(element).then(canvas => {
+            btns.style.display = 'flex'; // Show buttons
+            
+            const link = document.createElement('a');
+            link.download = 'delulu_evidence.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
+
+    // --- 5. RETRY FUNCTION ---
+    function resetApp() {
+        document.getElementById('inputRes').value = "";
+        document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('inputRes').focus();
     }
 </script>
 
