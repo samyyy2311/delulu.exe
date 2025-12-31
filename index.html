@@ -29,11 +29,13 @@
             background-image: radial-gradient(#000 1px, transparent 1px);
             background-size: 24px 24px;
             display: flex;
+            flex-direction: column; /* Changed for Footer alignment */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            box-sizing: border-box; /* Ensures padding doesn't break layout */
         }
         
         #app-container {
@@ -44,6 +46,8 @@
             max-width: 450px;
             width: 100%;
             position: relative;
+            margin-bottom: 40px; /* Space for footer */
+            z-index: 1;
         }
 
         .tape {
@@ -170,7 +174,6 @@
             transition: all 0.2s;
         }
 
-        /* Specific Colors for Actions */
         .btn-share { background: var(--accent-pink); }
         .btn-save { background: var(--accent-green); }
         .btn-retry { background: #fff; border: 2px dashed #000; width: 100%; margin-top: 10px; }
@@ -180,9 +183,94 @@
             box-shadow: 3px 3px 0px 0px #000;
         }
 
+        /* --- FOOTER STYLE --- */
+        footer {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #000;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* --- WELCOME MODAL STYLE --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background: #fff;
+            border: 4px solid #000;
+            box-shadow: 10px 10px 0px 0px #000;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: left;
+        }
+
+        .modal-title {
+            background: var(--accent-yellow);
+            border: 2px solid #000;
+            display: inline-block;
+            padding: 5px 10px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .modal-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-btn {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Space Mono', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .modal-btn:hover {
+            background: var(--accent-pink);
+            color: #000;
+        }
+
     </style>
 </head>
 <body>
+
+<div id="introModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title">⚠️ SYSTEM_WARNING</div>
+        <div class="modal-text">
+            <p>You are about to run <b>Delulu.exe</b>.</p>
+            <p>This program logic-checks your 2026 resolutions using a ruthlessly honest algorithm.</p>
+            <p><b>HOW TO USE:</b><br>
+            1. Type your goal (e.g., "Start a business", "Quit sugar").<br>
+            2. Press Enter.<br>
+            3. Accept your fate.</p>
+        </div>
+        <button class="modal-btn" onclick="closeModal()">I ACCEPT THE RISK</button>
+    </div>
+</div>
 
 <div class="container" id="app-container">
     <div class="tape"></div>
@@ -206,10 +294,29 @@
     </div>
 </div>
 
+<footer>
+    &copy; 2026 SAMARTH LAD • METAPHYSICAL REFUNDS DENIED
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
+    // --- 0. ON LOAD: CHECK VISITOR STATUS ---
+    window.onload = function() {
+        // Check local storage to see if they visited before
+        if (!localStorage.getItem('hasVisitedDelulu')) {
+            document.getElementById('introModal').style.display = 'flex';
+        }
+    };
+
+    function closeModal() {
+        document.getElementById('introModal').style.display = 'none';
+        // Set flag so it doesn't show again
+        localStorage.setItem('hasVisitedDelulu', 'true');
+        document.getElementById('inputRes').focus();
+    }
+
     // --- 1. ENTER KEY LISTENER ---
     document.getElementById('inputRes').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
@@ -270,7 +377,7 @@
                 fireConfetti = true;
             }
 
-            // --- PRIORITY 4: STARTUP & BUSINESS (Expanded) ---
+            // --- PRIORITY 4: STARTUP & BUSINESS ---
             else if (input.match(/startup|business|entrepreneur|founder|ceo|saas|pitch deck|unicorn|shark tank|funding/)) {
                 verdict = "FOUNDER_SYNDROME";
                 style = "status-optimistic";
@@ -291,7 +398,7 @@
                 text = "Your 10 CGPA will look great on a resume that a recruiter scans for 6 seconds. Just make sure you develop a personality alongside those grades. High grades don't cure social awkwardness.";
             }
             
-            // --- PRIORITY 6.5: META / SELF AWARENESS (Updated Regex) ---
+            // --- PRIORITY 6.5: META / SELF AWARENESS ---
             else if (input.match(/delete (this |the |my )?app|uninstall|close tab|delete delulu|alt f4/)) {
                 verdict = "ERROR_404_REALITY";
                 style = "status-delusional";
@@ -313,7 +420,7 @@
                 text = "Happiness is a byproduct, not a goal. This is like setting a resolution to 'be taller'. Pick a real habit, you vague philosopher.";
             }
 
-            // --- PRIORITY 7: DEPRESSION / GIVING UP (Fixed: Exceptions for Job/Work) ---
+            // --- PRIORITY 7: DEPRESSION / GIVING UP ---
             else if (input.match(/give up|quit|fail|hopeless|sad|depressed|survive|exist/) && !input.match(/smoke|vape|alcohol|sugar|social|phone|media|job|work|career/)) {
                 verdict = "SYSTEM_PAUSE";
                 style = "status-achievable";
@@ -377,7 +484,7 @@
                 text = "Reading is valid. Just make sure you're actually reading them, not just buying them to look intellectual on Zoom. One finished book beats ten half-started ones.";
             }
 
-            // --- CATEGORY: GENERAL LEARNING (Expanded) ---
+            // --- CATEGORY: GENERAL LEARNING ---
             else if (input.match(/learn|study|degree|course|cook|skill|language|spanish|french|german/)) {
                 verdict = "WHOLESOME";
                 style = "status-achievable";
@@ -409,7 +516,7 @@
 
             // --- CATEGORY: SOCIAL MEDIA (SPLIT) ---
             
-            // 1. Specific Actions (Delete/Quit) -> POSITIVE
+            // 1. Specific Actions (Delete/Quit)
             else if (input.match(/(delete|quit|uninstall|remove) (insta|gram|tiktok|facebook|twitter|x |snapchat|social|app)/)) {
                 verdict = "DOPAMINE_DETOX";
                 style = "status-achievable";
@@ -417,7 +524,7 @@
                 fireConfetti = true;
             }
 
-            // 2. Generic Usage (Scroll less/Screen time) -> IRONIC
+            // 2. Generic Usage
             else if (input.match(/social|insta|phone|screen|scroll|tiktok|reels|youtube|content|influencer|digital detox|screen time|\bapp\b/)) {
                 verdict = "IRONIC_DETECTED";
                 style = "status-optimistic";
