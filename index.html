@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Delulu.exe</title>
+    
+    <meta property="og:title" content="Delulu.exe 🔮">
+    <meta property="og:description" content="Input your 2026 resolution. I have opinions. Run the reality check simulation now.">
+    <meta property="og:image" content="https://api.dicebear.com/9.x/pixel-art/svg?seed=Delulu">
+    <meta name="theme-color" content="#a5b4fc">
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>">
-
+    
     <style>
-        /* --- NEO-BRUTALIST THEME --- */
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
         :root {
@@ -101,19 +104,42 @@
             transform: translate(-2px, -2px);
         }
 
-        /* MAIN BUTTON STYLE */
+        /* --- BUTTON GROUP (DICE + RUN) --- */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .dice-btn {
+            background: #fff;
+            border: 3px solid var(--border);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 65px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .dice-btn:hover {
+            background: var(--accent-green);
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px 0px #000;
+        }
+
         .main-btn {
             background: var(--border);
             color: #fff;
             border: 3px solid var(--border);
-            padding: 1rem 2rem;
+            padding: 1rem;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            width: 100%;
+            flex-grow: 1; 
             text-transform: uppercase;
             font-family: 'Space Mono', monospace;
-            margin-bottom: 10px;
         }
         
         .main-btn:hover {
@@ -151,7 +177,6 @@
         .loader { display: none; font-weight: bold; font-size: 1.2rem; text-align: center; margin-top: 20px; animation: blink 0.5s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- ACTION BUTTONS CONTAINER --- */
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -238,7 +263,6 @@
             background: var(--accent-pink);
             color: #000;
         }
-
     </style>
 </head>
 <body>
@@ -251,7 +275,7 @@
             <p>This program logic-checks your 2026 resolutions using a ruthlessly honest algorithm.</p>
             <p><b>HOW TO USE:</b><br>
             1. Type your goal (e.g., "Start a business", "Quit sugar").<br>
-            2. Press Enter.<br>
+            2. Press Enter (or click 🎲 for ideas).<br>
             3. Accept your fate.</p>
         </div>
         <button class="modal-btn" onclick="closeModal()">I ACCEPT THE RISK</button>
@@ -265,7 +289,11 @@
     
     <textarea id="inputRes" rows="4" placeholder="TYPE HERE..."></textarea>
     
-    <button class="main-btn" onclick="judgeResolution()">RUN_SIMULATION.EXE</button>
+    <div class="input-group">
+        <button class="dice-btn" onclick="fillRandom()" title="Generate Random Delusion">🎲</button>
+        <button class="main-btn" onclick="judgeResolution()">RUN_SIMULATION.EXE</button>
+    </div>
+    
     <div class="loader" id="loader">CALCULATING...</div>
 
     <div class="result-box" id="resultBox">
@@ -278,13 +306,16 @@
             <button class="action-btn btn-retry" onclick="resetApp()">NEW_SESSION</button>
         </div>
     </div>
+
+    <div style="margin-top: 2rem; font-size: 0.7rem; color: #666; text-align: center; border-top: 2px dashed #ccc; padding-top: 10px;">
+        SYSTEM_VER: 2.0.23 // MADE BY <span style="background:var(--accent-yellow); padding:0 4px; border:1px solid #000; font-weight:bold;">SAMARTH LAD</span>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
-    // --- 0. ON LOAD: CHECK VISITOR STATUS ---
     window.onload = function() {
         if (!localStorage.getItem('hasVisitedDelulu')) {
             document.getElementById('introModal').style.display = 'flex';
@@ -297,7 +328,6 @@
         document.getElementById('inputRes').focus();
     }
 
-    // --- 1. ENTER KEY LISTENER ---
     document.getElementById('inputRes').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -305,7 +335,32 @@
         }
     });
 
-    // --- 2. MAIN LOGIC ENGINE ---
+    // --- CURATED RANDOMIZER (CLEAN & AMBITIOUS ONLY) ---
+    const examples = [
+        "Master Python in one weekend",
+        "Become a crypto millionaire",
+        "Wake up at 4 AM and run a marathon daily",
+        "Quit my job and become a digital nomad",
+        "Read 100 books in 2026",
+        "Build an AI startup and sell it to Google",
+        "Get 6-pack abs in two weeks",
+        "Live entirely off passive income",
+        "Learn 5 languages fluently this year",
+        "Delete all social media and live in a cabin",
+        "Become a famous YouTuber",
+        "Stop procrastinating forever",
+        "Cook every meal at home, no ordering out",
+        "Save 90% of my salary",
+        "Just survive 2026"
+    ];
+
+    function fillRandom() {
+        const randomChoice = examples[Math.floor(Math.random() * examples.length)];
+        document.getElementById('inputRes').value = randomChoice;
+        document.getElementById('resultBox').style.display = 'none';
+    }
+
+    // --- MAIN LOGIC ENGINE ---
     function judgeResolution() {
         const input = document.getElementById('inputRes').value.toLowerCase();
         const loader = document.getElementById('loader');
@@ -316,14 +371,6 @@
         if (!input) return alert("ERROR: INPUT REQUIRED");
 
         resultBox.style.display = 'none';
-        
-        const loadingMessages = [
-            "CALCULATING PROBABILITY...",
-            "ANALYZING DELUSIONS...",
-            "RUNNING DIAGNOSTICS...",
-            "CHECKING DATABASE..."
-        ];
-        loader.innerText = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
         loader.style.display = 'block';
 
         setTimeout(() => {
@@ -333,249 +380,304 @@
             let verdict, style, text;
             let fireConfetti = false;
 
-            // --- PRIORITY 1: CRITICAL SAFETY FILTER ---
-            if (input.match(/\b(die|death|kill myself|suicide|hurt myself|end my life)\b/)) {
+            // --- PRIORITY 1: SAFETY & CRISIS ---
+            if (input.match(/\b(die|death|kill myself|suicide|hurt myself|end my life|end it all)\b/)) {
                 verdict = "SYSTEM_MESSAGE";
                 style = "status-delusional"; 
                 text = "I am a simple bot designed for jokes, not crises. You matter. Please reach out to a friend or professional. 2026 needs you in it.";
             }
+            else if (input.match(/(starve|not eat|stop eating|anorexi|bulimi)/)) {
+                verdict = "HEALTH_HAZARD";
+                style = "status-delusional"; 
+                text = "Your body runs on fuel, not air. Starving isn't a diet plan; it's a shutdown command. Eat something nutritious, please.";
+            }
+            
+            // --- PRIORITY 2: TIME DELUSIONS (THE "PYTHON BUG" FIX) ---
+            // Triggers if you combine "master/learn/get" with "weekend/week/overnight"
+            else if (input.match(/(in|over|within) (a|one|this) (weekend|week|night|day)/) && input.match(/learn|master|become|get|build|lose|gain|abs|fluent/)) {
+                verdict = "NEO_FROM_MATRIX_ERROR";
+                style = "status-delusional";
+                text = "You think you can learn a skill in 48 hours that people study for years? This isn't The Matrix. You can't just 'download' it. See you in tutorial hell.";
+            }
 
-            // --- PRIORITY 2: ALCOHOL ---
-            else if (input.match(/\balcohol\b|drinking|sober|sobriety|quit drinking|dry january/)) {
+            // --- PRIORITY 3: EMOTIONAL & SURVIVAL ---
+            else if (input.match(/give up|quit everything|fail|hopeless|sad|depressed|survive|exist|cry|tired|nothing|no goals/)) {
+                verdict = "SYSTEM_PAUSE";
+                style = "status-achievable";
+                text = "Roast mode paused. If 2025 broke you, survival IS the goal. You don't need a resolution, you need a nap and a hug. One day at a time is valid.";
+            }
+
+            // --- PRIORITY 4: SPECIFIC TOXIC ACTIONS ---
+            
+            // A. BAD HABITS (STARTING THEM)
+            else if (input.match(/(start|begin|buy|get into) (smoking|cigarettes|vaping|drugs|nicotine)/)) {
+                verdict = "BAD_DECISION_PROTOCOL";
+                style = "status-delusional";
+                text = "You want to PAY money to destroy your lungs? This is the worst ROI in history. Buy a bubble gum instead.";
+            }
+            
+            // B. UNEMPLOYMENT (QUITTING JOB)
+            else if (input.match(/(quit|resign|leave|drop) (my )?(job|work|office)/)) {
+                verdict = "UNEMPLOYMENT_ERA";
+                style = "status-delusional";
+                text = "Brave move. I hope you have 6 months of savings, or you're about to find out that 'freedom' tastes a lot like instant noodles.";
+            }
+
+            // C. RELATIONSHIPS (EX & TOXIC)
+            else if (input.match(/(text|call|back with|miss|fix) (my )?ex/)) {
+                verdict = "CANON_EVENT_DETECTED";
+                style = "status-delusional";
+                text = "Do not do it. Re-reading the same book won't change the ending. Put the phone down and drink some water.";
+            }
+            
+            // D. EDUCATION (DROPPING OUT)
+            else if (input.match(/(drop out|quit) (college|school|uni|university)/)) {
+                verdict = "STEVE_JOBS_COMPLEX";
+                style = "status-delusional";
+                text = "You are not Mark Zuckerberg. You are likely just unemployed. Finish the degree, or at least have a billion-dollar plan first.";
+            }
+            
+            // E. FINANCE (GAMBLING, CRYPTO, DEBT) - Fixed "Passive Income" bug here
+            else if (input.match(/(lottery|dream11|betting|gamble|jackpot|casino)/)) {
+                verdict = "LUCK_IS_NOT_A_STRATEGY";
+                style = "status-delusional";
+                text = "Your retirement plan is a statistical error. You have a higher chance of getting hit by a meteor than winning that jackpot.";
+            }
+            else if (input.match(/(crypto|bitcoin|nft|web3|blockchain|eth|doge|coins|trading|passive income)/)) {
+                verdict = "FINANCIAL_RUIN_LOADING";
+                style = "status-delusional";
+                text = "Ah, 'passive income' and 'crypto'. Or as we call it in the real world: 'Losing money while you sleep'. Keep your day job.";
+            }
+            else if (input.match(/(emi|loan|credit card|installment|finance) (a|the)/)) {
+                verdict = "DEBT_TRAP_DETECTED";
+                style = "status-delusional";
+                text = "If you have to pay for it in 24 installments, you can't afford it. 2026 is not the year to go broke for the aesthetic.";
+            }
+            
+            // F. LIFE (INDIAN CONTEXTS)
+            else if (input.match(/(canada|usa|uk|germany|australia|masters|abroad|visa)/)) {
+                verdict = "VISA_APPLICATION_PENDING";
+                style = "status-optimistic";
+                text = "Enjoy the student loan and working 3 part-time shifts at a coffee shop just to pay rent. The dollar dream comes with a lot of dishwashing.";
+            }
+            else if (input.match(/(buy|purchase|own) (a )?(house|flat|property|apartment)/)) {
+                verdict = "INSUFFICIENT_FUNDS";
+                style = "status-delusional";
+                text = "In this economy? Unless you have a generational inheritance you forgot to mention, you're looking at a very nice rental for the next 40 years.";
+            }
+            else if (input.match(/(learn to )?drive|driving|license|traffic/)) {
+                verdict = "STUCK_IN_TRAFFIC";
+                style = "status-optimistic";
+                text = "You want to drive? In this traffic? You will spend 2026 staring at the bumper of a bus. Take the metro.";
+            }
+            else if (input.match(/(mars|space|moon|rocket)/)) {
+                verdict = "ELON_MUSK_SYNDROME";
+                style = "status-delusional";
+                text = "Okay, calm down Elon. Let's try visiting a different state before we aim for a different planet.";
+            }
+
+            // --- PRIORITY 5: GENERAL CATEGORIES (FALLBACKS) ---
+
+            // SUBSTANCES (STOPPING THEM)
+            else if (input.match(/\balcohol\b|drinking|sober|sobriety|quit drinking|dry january|beer|wine|vodka|cocktails/)) {
                 verdict = "LIVER_RECOVERY_MODE";
                 style = "status-achievable";
                 text = "Your liver is sending thank-you notes. Your wallet agrees. This is the rare resolution where future you will genuinely thank present you.";
                 fireConfetti = true;
             }
-
-            // --- PRIORITY 3: SMOKING / VAPING ---
-            else if (input.match(/smoke|smoking|vape|vaping|nicotine|cigarette/)) {
+            else if (input.match(/smoke|smoking|vape|vaping|nicotine|cigarette|weed|cannabis|quit smoking/)) {
                 verdict = "LUNG_CAPACITY_RISING";
                 style = "status-achievable";
                 text = "Finally. Your lungs are grateful. Your wallet is grateful. This is the rare resolution that's actually non-negotiable. You got this.";
                 fireConfetti = true;
             }
-
-            // --- PRIORITY 4: STARTUP & BUSINESS ---
-            else if (input.match(/start a business|launch|startup|business|entrepreneur|founder|ceo|saas|pitch deck|unicorn|shark tank|funding/)) {
-                verdict = "FOUNDER_SYNDROME";
-                style = "status-optimistic";
-                text = "You have a 'concept' in a Google Doc, not a business. 90% of startups fail, and the other 10% are just 3 people in a Slack channel pretending to work. Validate your idea first.";
-            }
-
-            // --- PRIORITY 4.2: GAMING ---
-            else if (input.match(/valorant|bgmi|pubg|league of legends|csgo|steam|elo|k\/d|immortal|radiant|conqueror|gamer|gaming|clash/)) {
-                verdict = "TOUCH_GRASS";
+            // ENERGY DRINKS
+            else if (input.match(/red\s?bull|monster|energy drink|caffeine|coffee|sting|hell energy|prime|espresso|celsius/)) {
+                verdict = "HEART_PALPITATIONS";
                 style = "status-delusional";
-                text = "Your rank in a video game is the only number going up this year. Meanwhile, your Vitamin D levels are hitting critical lows. Go touch grass. Real grass.";
+                text = "Your heart is beating in 4/4 time at 180 BPM. You don't need 'wings', you need a nap. Your kidneys are currently filing a restraining order against you.";
             }
 
-            // --- PRIORITY 4.3: CONTENT CREATOR ---
-            else if (input.match(/podcast|stream|twitch|youtuber|content creation|vlog|channel/)) {
-                verdict = "NOBODY_ASKED";
-                style = "status-delusional";
-                text = "The world does not need another podcast. Especially not one where you and your friends 'just chat' about nothing. Please spare the microphone.";
-            }
-
-            // --- PRIORITY 4.5: CAREER / JOB ---
-            else if (input.match(/job|promotion|promoted|career|internship|hired|work/)) {
-                verdict = "CORPORATE_SLAVE";
-                style = "status-optimistic";
-                text = "Capitalism thanks you for your service. Your boss is already planning your unpaid overtime. Remember: HR is not your friend, and 'family culture' is a trap.";
-            }
-
-            // --- PRIORITY 5: COMPETITIVE EXAMS ---
-            else if (input.match(/jee|neet|iit|aiims|upsc|gate|cat exam|crack|rank|competitive exam|physics wallah|allen/)) {
-                verdict = "CANNON_EVENT_LOADING";
-                style = "status-achievable";
-                text = "Ah, the Great Academic Rat Race. Remember: An exam result is a piece of paper, not a death sentence. But say goodbye to your social life and sleep schedule. Valid, but painful.";
-            }
-
-            // --- PRIORITY 6: CGPA / GRADES ---
-            else if (input.match(/cgpa|gpa|marks|grades|topper|top the class|9 cgpa|10 cgpa|semester|90%|95%/)) {
-                verdict = "ACADEMIC_VALIDATION";
-                style = "status-optimistic";
-                text = "Your 10 CGPA will look great on a resume that a recruiter scans for 6 seconds. Just make sure you develop a personality alongside those grades. High grades don't cure social awkwardness.";
-            }
-            
-            // --- PRIORITY 6.5: META / SELF AWARENESS ---
-            // 'Delete Instagram' must trigger DOPAMINE_DETOX, not IRONIC_DETECTED
-            else if (input.match(/(delete|quit|uninstall|remove) (insta|gram|tiktok|facebook|twitter|x |snapchat|social|app)/)) {
+            // DIGITAL DETOX
+            else if (input.match(/(delete|quit|uninstall|remove) (insta|gram|tiktok|facebook|twitter|x |snapchat|social|app|account)/)) {
                 verdict = "DOPAMINE_DETOX";
                 style = "status-achievable";
                 text = "Deleting the slot machine in your pocket? Bold move. Your attention span might actually recover. Enjoy the silence.";
                 fireConfetti = true;
             }
-            else if (input.match(/delete (this |the |my )?app|uninstall|close tab|delete delulu|alt f4/)) {
-                verdict = "ERROR_404_REALITY";
-                style = "status-delusional";
-                text = "Nice try. You cannot 'delete' a website, you can only close the tab. But I respect the attempt to silence the truth.";
-            }
-            else if (input.match(/delulu|delusional|solulu/)) {
-                verdict = "SYSTEM_RECURSION";
-                style = "status-optimistic";
-                text = "You are trying to run the software *inside* the software. Congratulations, you have broken the matrix. 2026 is yours.";
-            }
-            else if (input.match(/nothing|no resolution|none|idk/)) {
-                verdict = "SYSTEM_HACKED";
-                style = "status-achievable";
-                text = "No goals = No failure. You have successfully outsmarted the rat race. Enjoy your year of zero expectations.";
-            }
-            else if (input.match(/be happy|happiness|find peace|joy/)) {
-                verdict = "ERROR_404_SPECIFICITY";
-                style = "status-optimistic";
-                text = "Happiness is a byproduct, not a goal. This is like setting a resolution to 'be taller'. Pick a real habit, you vague philosopher.";
-            }
 
-            // --- PRIORITY 7: DEPRESSION / GIVING UP ---
-            else if (input.match(/give up|quit|fail|hopeless|sad|depressed|survive|exist/) && !input.match(/smoke|vape|alcohol|sugar|social|phone|media|job|work|career/)) {
-                verdict = "SYSTEM_PAUSE";
-                style = "status-achievable";
-                text = "Roast mode paused. If 2025 broke you, survival IS the goal. One day at a time is valid. You're doing better than you think.";
-            }
-            
-            // --- PRIORITY 7.5: PROCRASTINATION ---
-            else if (input.match(/procrastinat|productive|focus|lazy/)) {
-                verdict = "LATER_BASE";
-                style = "status-optimistic";
-                text = "You are reading this to avoid doing the actual thing. You'll probably start this resolution 'tomorrow'. Spoiler: Tomorrow never comes.";
-            }
-
-            // --- PRIORITY 8: THE DAILY TRAP ---
-            else if (input.includes("every day") || input.includes("everyday") || input.includes("daily")) {
-                verdict = "BURNOUT_DETECTED";
-                style = "status-delusional";
-                text = "Doing anything 'every day' is the fastest way to quit by January 12th. Professional athletes take rest days. You should too. Try '3 times a week'.";
-            }
-
-            // --- CATEGORY: BETTER SLEEP (Specific) ---
-            // Must be before "Wake Up" so "Sleep Early" doesn't clash
-            else if (input.match(/sleep early|fix sleep|bedtime|sleep schedule|insomnia/)) {
+            // SLEEP
+            else if (input.match(/sleep early|fix sleep|bedtime|sleep schedule|insomnia|go to bed|8 hours|circadian/)) {
                 verdict = "GRANDMA_MODE";
                 style = "status-achievable";
-                text = "Going to bed at a reasonable hour? Finally, a resolution that doesn't involve suffering. Your dark circles are begging you to keep this one.";
+                text = "Going to bed at a reasonable hour? Finally, a resolution that involves doing less. Your dark circles are begging you to keep this one.";
                 fireConfetti = true;
             }
-
-            // --- CATEGORY: WAKE UP EARLY (Generic) ---
-            // Removed standalone 'early' so "Sleep early" doesn't trigger this
-            else if (input.match(/5am|6am|7am|wake up|rise|morning|alarm/)) {
+            else if (input.match(/5am|6am|7am|4am|wake up|rise|morning|alarm|early bird/)) {
                 verdict = "SLEEP_DEBT_DETECTED";
                 style = "status-delusional";
                 text = "You'll feel like a god at 6 AM and a zombie by 2 PM. You aren't gaining more hours in the day; you're just shifting your scrolling time to before the sun comes up.";
             }
 
-            // --- CATEGORY: GLOW UP ---
-            else if (input.match(/glow up|skincare|mewing|looksmax|wardrobe|style|fashion|haircut|pretty|handsome/)) {
-                verdict = "FRONTEND_UPDATE";
-                style = "status-optimistic";
-                text = "You can polish the frontend (your face), but the backend logic (your personality) still needs a rewrite. A haircut won't fix your trauma.";
+            // WATER & DIET
+            else if (input.match(/water|hydrate|h2o|hydro|drink more|liters|gallon/)) {
+                verdict = "HYDRO_HOMIE";
+                style = "status-achievable";
+                text = "Hydration is key, but remember: a ₹2000 water bottle is a tool, not a personality trait. Drink up.";
+                fireConfetti = true;
             }
-
-            // --- CATEGORY: DIET & WATER ---
-            else if (input.match(/diet|keto|sugar|vegan|water|hydrate|food|eat|weight|loss/)) {
+            else if (input.match(/sugar|sweet|dessert|chocolate|candy|junk|soda|coke|pepsi|cake|donuts|ice cream/)) {
                 verdict = "CALORIE_DEFICIT_WARNING";
                 style = "status-optimistic";
-                text = "Hydration is key, but a ₹2000 water bottle isn't a personality trait. Also, we both know that 'No Sugar' rule expires the second you see a birthday cake.";
+                text = "We both know that 'No Sugar' rule expires the second you see a birthday cake. Stay strong for at least a week.";
             }
-
-            // --- CATEGORY: MOVING OUT ---
-            else if (input.match(/move out|apartment|flat|rent|own place|leave parents|roommate/)) {
-                verdict = "SUBSCRIPTION_TRAP";
+            else if (input.match(/diet|keto|vegan|food|eat|weight|loss|healthy|clean eating|salad|protein|nutrition/)) {
+                verdict = "RABBIT_FOOD_ERA";
                 style = "status-optimistic";
-                text = "Have you seen the economy? You are moving from a free bedroom to a monthly subscription service called 'Rent'. Enjoy paying for your own cheese.";
+                text = "Eating healthy is great until you realize a salad costs more than a pizza. Prepare your wallet for the organic tax.";
             }
 
-            // --- CATEGORY: TRAVEL (SPECIFIC: GOA PLAN) ---
-            else if (input.match(/goa|trip with friends|group trip|ladakh/)) {
-                verdict = "GROUP_CHAT_SILENCE";
-                style = "status-delusional";
-                text = "A Goa plan? With those friends? We both know the group chat is going to go silent 3 days before the flight. Save the deposit money.";
-            }
-            // --- CATEGORY: TRAVEL (GENERIC) ---
-            else if (input.match(/travel|trip|vacation|bali|europe|hike|world|explore/)) {
-                verdict = "ESCAPISM_DETECTED";
-                style = "status-optimistic";
-                text = "Travel is great. Just make sure you're packing actual experiences, not just 50 different outfits for the Instagram photos. Be present, not posted.";
+            // GENERAL MONEY
+            else if (input.match(/money|save|budget|spend|invest|rich|millionaire|finance|debt|loan|sip|mutual fund|fd|stock market/)) {
+                verdict = "CHALLENGING";
+                style = "status-optimistic"; 
+                text = "Your bank account supports this goal, but your emotional support online shopping habits do not. Good luck fighting capitalism.";
             }
 
-            // --- CATEGORY: FITNESS & GYM ---
-            else if (input.match(/gym|lift|weights|muscle|abs|pushups|crossfit|yoga|pilates|zumba|bulk|cut|creatine|protein/)) {
-                verdict = "MEMBERSHIP_UNUSED";
-                style = "status-optimistic";
-                text = "January gym = packed. February gym = ghost town. Your membership card will work great as a bookmark for the self-help book you also won't finish.";
-            }
-
-            // --- CATEGORY: RUNNING ---
-            else if (input.match(/run|jog|marathon|10k|5k|km|sprint/)) {
-                verdict = "KNEE_PAIN_PENDING";
-                style = "status-optimistic";
-                text = "Running is free, but knee replacement surgery is expensive. Ensure you are running for health, and not just running away from your problems.";
-            }
-
-            // --- CATEGORY: TECH & CRYPTO ---
-            else if (input.match(/code|coding|python|javascript|js|react|ai|hackathon|dev|tech|data|cloud|web3|crypto|bitcoin|blockchain|full stack|programming|software|machine learning|ml|api/)) {
+            // SKILLS & LEARNING
+            else if (input.match(/code|coding|python|javascript|js|react|ai|hackathon|dev|tech|data|cloud|full stack|programming|software/)) {
                 verdict = "ROI_CONFIRMED";
                 style = "status-achievable";
                 text = "Finally, a resolution with actual ROI. Skills survive inflation. Just don't get stuck watching tutorials forever—build something broken and learn from that.";
                 fireConfetti = true;
             }
-
-            // --- CATEGORY: READING (Books) ---
+            else if (input.match(/spanish|french|german|japanese|duolingo|language/)) {
+                verdict = "STREAK_ANXIETY";
+                style = "status-achievable";
+                text = "The green owl is watching. Missing even one lesson isn't just a failed streak, it's a personal threat to your family. Good luck.";
+            }
             else if (input.match(/read|book|novel|library|kindle|pages/)) {
                 verdict = "SHELF_DECORATION";
                 style = "status-optimistic";
                 text = "Reading is valid. Just make sure you're actually reading them, not just buying them to look intellectual on Zoom. One finished book beats ten half-started ones.";
             }
-
-            // --- CATEGORY: LANGUAGE (SPECIFIC: DUOLINGO) ---
-            // Fixed text to be generic (removed "Spanish")
-            else if (input.match(/spanish|french|german|japanese|duolingo|language/)) {
-                verdict = "STREAK_ANXIETY";
-                style = "status-achievable";
-                text = "The green owl is watching. Missing one lesson isn't just a failed streak, it's a personal threat to your family. Good luck.";
-            }
-            // --- CATEGORY: GENERAL LEARNING ---
-            else if (input.match(/learn|study|degree|course|cook|skill/)) {
+            else if (input.match(/learn|study|degree|course|cook|skill|masters/)) {
                 verdict = "WHOLESOME";
                 style = "status-achievable";
                 text = "Acquiring new data is always approved. Just make sure you actually apply the skill, rather than just hoarding the textbooks.";
                 fireConfetti = true;
             }
 
-            // --- CATEGORY: MONEY & BUSINESS ---
-            else if (input.match(/\bsave\s*(\$|₹|rs|\d|money)|budget|spend|invest|rich|millionaire|hustle|stocks|dropshipping|financial|buy|purchase|afford/)) {
-                verdict = "CHALLENGING";
-                style = "status-optimistic"; 
-                text = "Your bank account supports this goal, but your emotional support online shopping habits do not. Good luck fighting capitalism.";
+            // BUSINESS & CAREER (GENERIC)
+            else if (input.match(/start a business|launch|startup|business|entrepreneur|founder|ceo|saas|pitch deck/)) {
+                verdict = "FOUNDER_SYNDROME";
+                style = "status-optimistic";
+                text = "You have a 'concept' in a Google Doc, not a business. 90% of startups fail, and the other 10% are just 3 people in a Slack channel pretending to work.";
+            }
+            else if (input.match(/job|promotion|promoted|career|internship|hired|work|corporate|manager/)) {
+                verdict = "CORPORATE_SLAVE";
+                style = "status-optimistic";
+                text = "Capitalism thanks you for your service. Your boss is already planning your unpaid overtime. Remember: HR is not your friend.";
             }
 
-            // --- CATEGORY: SELF CARE / FOCUS ON ME ---
-            else if (input.match(/focus on (myself|me|you)|work on (myself|me)|self care|character development|mental health|healing|therapy/)) {
-                verdict = "MAIN_CHARACTER_ENERGY";
+            // GAMING
+            else if (input.match(/valorant|bgmi|pubg|league of legends|csgo|steam|elo|k\/d|gamer|gaming|ps5/)) {
+                verdict = "TOUCH_GRASS";
+                style = "status-delusional";
+                text = "Your rank in a video game is the only number going up this year. Meanwhile, your Vitamin D levels are hitting critical lows. Go touch grass. Real grass.";
+            }
+            else if (input.match(/podcast|stream|twitch|youtuber|content creation|vlog|channel|influencer/)) {
+                verdict = "NOBODY_ASKED";
+                style = "status-delusional";
+                text = "The world does not need another podcast. Especially not one where you and your friends 'just chat' about nothing. Please spare the microphone.";
+            }
+
+            // FITNESS
+            else if (input.match(/gym|lift|weights|muscle|abs|pushups|crossfit|yoga|pilates|zumba|bulk|cut|creatine|protein/)) {
+                verdict = "MEMBERSHIP_UNUSED";
+                style = "status-optimistic";
+                text = "January gym = packed. February gym = ghost town. Your membership card will work great as a bookmark for the self-help book you also won't finish.";
+            }
+            else if (input.match(/run|jog|marathon|10k|5k|km|sprint|cardio/)) {
+                verdict = "KNEE_PAIN_PENDING";
+                style = "status-optimistic";
+                text = "Running is free, but knee replacement surgery is expensive. Ensure you are running for health, and not just running away from your problems.";
+            }
+
+            // LIFE & HOBBIES
+            else if (input.match(/procrastinat|productive|focus|lazy|discipline|motivation/)) {
+                verdict = "LATER_BASE";
+                style = "status-optimistic";
+                text = "You are reading this to avoid doing the actual thing. You'll probably start this resolution 'tomorrow'. Spoiler: Tomorrow never comes.";
+            }
+            else if (input.match(/happy|happiness|find peace|joy|mental health|therapy/)) {
+                verdict = "ERROR_404_SPECIFICITY";
+                style = "status-optimistic";
+                text = "Happiness is a byproduct, not a goal. This is like setting a resolution to 'be taller'. Pick a real habit, you vague philosopher.";
+            }
+            else if (input.match(/tattoo|ink|piercing|sleeve/)) {
+                verdict = "PERMANENT_DECISION";
+                style = "status-optimistic";
+                text = "You want art on your skin, but you can't even decide what to eat for dinner. Maybe start with a sticker.";
+            }
+            else if (input.match(/dog|cat|pet|puppy|kitten|adopt|hamster/)) {
+                verdict = "RESPONSIBILITY_CHECK";
                 style = "status-achievable";
-                text = "Finally. You are listening. Upgrade your stats, clear your cache, and restart. Just don't let 'self-care' turn into 'spending rent money on scented candles'.";
-                fireConfetti = true;
+                text = "A pet is a 15-year commitment, not a prop for your Instagram stories. I hope you like picking up poop.";
+            }
+            else if (input.match(/goa|trip with friends|group trip|ladakh/)) {
+                verdict = "GROUP_CHAT_SILENCE";
+                style = "status-delusional";
+                text = "A Goa plan? With those friends? We both know the group chat is going to go silent 3 days before the flight. Save the deposit money.";
+            }
+            else if (input.match(/travel|trip|vacation|bali|europe|hike|world|explore|flight/)) {
+                verdict = "ESCAPISM_DETECTED";
+                style = "status-optimistic";
+                text = "Travel is great. Just make sure you're packing actual experiences, not just 50 different outfits for the Instagram photos.";
+            }
+            else if (input.match(/move out|apartment|flat|rent|own place|leave parents|roommate/)) {
+                verdict = "SUBSCRIPTION_TRAP";
+                style = "status-optimistic";
+                text = "Have you seen the economy? You are moving from a free bedroom to a monthly subscription service called 'Rent'. Enjoy paying for your own cheese.";
+            }
+            else if (input.match(/glow up|skincare|mewing|looksmax|wardrobe|style|fashion/)) {
+                verdict = "FRONTEND_UPDATE";
+                style = "status-optimistic";
+                text = "You can polish the frontend (your face), but the backend logic (your personality) still needs a rewrite. A haircut won't fix your trauma.";
             }
 
-            // --- CATEGORY: RELATIONSHIPS (SPECIFIC: SITUATIONSHIP) ---
+            // RELATIONSHIPS (GENERIC)
             else if (input.match(/situationship|crush|confess|ask (him|her) out|text (him|her)|talking stage/)) {
                 verdict = "UNDEFINED_VARIABLE";
                 style = "status-delusional";
                 text = "It’s not a relationship, it’s a 'situationship' because you're afraid of labels. Stop reading into their Instagram stories and just ask them out. Or block them.";
             }
-            // --- CATEGORY: RELATIONSHIPS (GENERIC) ---
-            else if (input.match(/date|dating|love|partner|my ex|boyfriend|girlfriend|marriage|wedding|propose|tinder|bumble|hinge|relationship|\bbf\b|\bgf\b/)) {
+            else if (input.match(/date|dating|love|partner|my ex|boyfriend|girlfriend|marriage|wedding|propose|tinder|bumble|hinge|relationship/)) {
                 verdict = "FOCUS_ON_YOU";
                 style = "status-achievable";
                 text = "2026 is for character development. Work on your own stats first—confidence, stability, hobbies. Player 2 joins when you're already winning.";
             }
+            else if (input.match(/fix (him|her)|change (him|her)/)) {
+                verdict = "PROJECT_MANAGER_SYNDROME";
+                style = "status-delusional";
+                text = "He is a grown man, not a DIY project. You are his partner, not his rehabilitation center. Let it go.";
+            }
 
-            // --- CATEGORY: SOCIAL MEDIA (GENERIC - Low Priority) ---
-            else if (input.match(/social|insta|phone|screen|scroll|tiktok|reels|youtube|content|influencer|digital detox|screen time|\bapp\b/)) {
+            // META
+            else if (input.match(/social|insta|phone|screen|scroll|tiktok|reels|youtube/)) {
                 verdict = "IRONIC_DETECTED";
                 style = "status-optimistic";
                 text = "You are typing this on a screen, promising to look at screens less. The algorithm is watching. Try 'Delete the app' instead.";
+            }
+            else if (input.match(/focus on (myself|me|you)|work on (myself|me)|self care|character development|mental health|healing|therapy/)) {
+                verdict = "MAIN_CHARACTER_ENERGY";
+                style = "status-achievable";
+                text = "Finally. You are listening. Upgrade your stats, clear your cache, and restart. Just don't let 'self-care' turn into 'spending rent money on scented candles'.";
+            }
+            else if (input.match(/be happy|happiness|find peace|joy/)) {
+                verdict = "ERROR_404_SPECIFICITY";
+                style = "status-optimistic";
+                text = "Happiness is a byproduct, not a goal. This is like setting a resolution to 'be taller'. Pick a real habit, you vague philosopher.";
             }
 
             // --- FALLBACK ---
@@ -602,31 +704,35 @@
         }, 800);
     }
 
-    // --- 3. SHARE FUNCTION ---
     function shareResult() {
         const text = "🔮 Just got roasted by Delulu.exe! Check your 2026 Reality Score here: " + window.location.href;
         
+        const badge = document.getElementById('badge').innerText;
+        const comment = document.getElementById('comment').innerText;
+        
+        let shareText = text;
+        if(badge && comment && document.getElementById('resultBox').style.display !== 'none') {
+             shareText = `🔮 Delulu.exe Result:\n${badge}\n"${comment}"\n\nCheck yours: ${window.location.href}`;
+        }
+
         if (navigator.share) {
             navigator.share({
                 title: 'Delulu.exe Reality Check',
-                text: text,
+                text: shareText,
                 url: window.location.href,
             }).catch(console.error);
         } else {
-            navigator.clipboard.writeText(text);
+            navigator.clipboard.writeText(shareText);
             alert("URL copied to clipboard!");
         }
     }
 
-    // --- 4. SAVE RECEIPT FUNCTION ---
     function saveReceipt() {
         const element = document.getElementById("app-container");
         const btns = document.querySelector(".action-buttons");
-        btns.style.display = 'none'; // Hide buttons
-
+        btns.style.display = 'none'; 
         html2canvas(element).then(canvas => {
-            btns.style.display = 'flex'; // Show buttons
-            
+            btns.style.display = 'flex'; 
             const link = document.createElement('a');
             link.download = 'delulu_evidence.png';
             link.href = canvas.toDataURL();
@@ -634,7 +740,6 @@
         });
     }
 
-    // --- 5. RETRY FUNCTION ---
     function resetApp() {
         document.getElementById('inputRes').value = "";
         document.getElementById('resultBox').style.display = 'none';
