@@ -29,13 +29,13 @@
             background-image: radial-gradient(#000 1px, transparent 1px);
             background-size: 24px 24px;
             display: flex;
-            flex-direction: column; /* Changed for Footer alignment */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            box-sizing: border-box; /* Ensures padding doesn't break layout */
+            box-sizing: border-box;
         }
         
         #app-container {
@@ -46,7 +46,7 @@
             max-width: 450px;
             width: 100%;
             position: relative;
-            margin-bottom: 40px; /* Space for footer */
+            margin-bottom: 40px; 
             z-index: 1;
         }
 
@@ -204,7 +204,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
-            display: none; /* Hidden by default */
+            display: none; 
             justify-content: center;
             align-items: center;
             z-index: 999;
@@ -295,7 +295,7 @@
 </div>
 
 <footer>
-    &copy; 2026 SAMARTH LAD • METAPHYSICAL REFUNDS DENIED
+    &copy; SAMARTH LAD
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -304,7 +304,6 @@
 <script>
     // --- 0. ON LOAD: CHECK VISITOR STATUS ---
     window.onload = function() {
-        // Check local storage to see if they visited before
         if (!localStorage.getItem('hasVisitedDelulu')) {
             document.getElementById('introModal').style.display = 'flex';
         }
@@ -312,7 +311,6 @@
 
     function closeModal() {
         document.getElementById('introModal').style.display = 'none';
-        // Set flag so it doesn't show again
         localStorage.setItem('hasVisitedDelulu', 'true');
         document.getElementById('inputRes').focus();
     }
@@ -337,7 +335,6 @@
 
         resultBox.style.display = 'none';
         
-        // RANDOMIZED LOADING MESSAGES
         const loadingMessages = [
             "CALCULATING PROBABILITY...",
             "ANALYZING DELUSIONS...",
@@ -515,16 +512,12 @@
             }
 
             // --- CATEGORY: SOCIAL MEDIA (SPLIT) ---
-            
-            // 1. Specific Actions (Delete/Quit)
             else if (input.match(/(delete|quit|uninstall|remove) (insta|gram|tiktok|facebook|twitter|x |snapchat|social|app)/)) {
                 verdict = "DOPAMINE_DETOX";
                 style = "status-achievable";
                 text = "Deleting the slot machine in your pocket? Bold move. Your attention span might actually recover. Enjoy the silence.";
                 fireConfetti = true;
             }
-
-            // 2. Generic Usage
             else if (input.match(/social|insta|phone|screen|scroll|tiktok|reels|youtube|content|influencer|digital detox|screen time|\bapp\b/)) {
                 verdict = "IRONIC_DETECTED";
                 style = "status-optimistic";
