@@ -29,8 +29,8 @@
             background-image: radial-gradient(#000 1px, transparent 1px);
             background-size: 24px 24px;
             display: flex;
-            justify-content: center; /* Centered Horizontally */
-            align-items: center;     /* Centered Vertically */
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
@@ -357,10 +357,31 @@
             }
 
             // --- PRIORITY 4: STARTUP & BUSINESS ---
-            else if (input.match(/startup|business|entrepreneur|founder|ceo|saas|pitch deck|unicorn|shark tank|funding/)) {
+            else if (input.match(/start a business|launch|startup|business|entrepreneur|founder|ceo|saas|pitch deck|unicorn|shark tank|funding/)) {
                 verdict = "FOUNDER_SYNDROME";
                 style = "status-optimistic";
                 text = "You have a 'concept' in a Google Doc, not a business. 90% of startups fail, and the other 10% are just 3 people in a Slack channel pretending to work. Validate your idea first.";
+            }
+
+            // --- PRIORITY 4.2: GAMING ---
+            else if (input.match(/valorant|bgmi|pubg|league of legends|csgo|steam|elo|k\/d|immortal|radiant|conqueror|gamer|gaming|clash/)) {
+                verdict = "TOUCH_GRASS";
+                style = "status-delusional";
+                text = "Your rank in a video game is the only number going up this year. Meanwhile, your Vitamin D levels are hitting critical lows. Go touch grass. Real grass.";
+            }
+
+            // --- PRIORITY 4.3: CONTENT CREATOR ---
+            else if (input.match(/podcast|stream|twitch|youtuber|content creation|vlog|channel/)) {
+                verdict = "NOBODY_ASKED";
+                style = "status-delusional";
+                text = "The world does not need another podcast. Especially not one where you and your friends 'just chat' about nothing. Please spare the microphone.";
+            }
+
+            // --- PRIORITY 4.5: CAREER / JOB ---
+            else if (input.match(/job|promotion|promoted|career|internship|hired|work/)) {
+                verdict = "CORPORATE_SLAVE";
+                style = "status-optimistic";
+                text = "Capitalism thanks you for your service. Your boss is already planning your unpaid overtime. Remember: HR is not your friend, and 'family culture' is a trap.";
             }
 
             // --- PRIORITY 5: COMPETITIVE EXAMS ---
@@ -378,6 +399,13 @@
             }
             
             // --- PRIORITY 6.5: META / SELF AWARENESS ---
+            // 'Delete Instagram' must trigger DOPAMINE_DETOX, not IRONIC_DETECTED
+            else if (input.match(/(delete|quit|uninstall|remove) (insta|gram|tiktok|facebook|twitter|x |snapchat|social|app)/)) {
+                verdict = "DOPAMINE_DETOX";
+                style = "status-achievable";
+                text = "Deleting the slot machine in your pocket? Bold move. Your attention span might actually recover. Enjoy the silence.";
+                fireConfetti = true;
+            }
             else if (input.match(/delete (this |the |my )?app|uninstall|close tab|delete delulu|alt f4/)) {
                 verdict = "ERROR_404_REALITY";
                 style = "status-delusional";
@@ -406,6 +434,13 @@
                 text = "Roast mode paused. If 2025 broke you, survival IS the goal. One day at a time is valid. You're doing better than you think.";
             }
             
+            // --- PRIORITY 7.5: PROCRASTINATION ---
+            else if (input.match(/procrastinat|productive|focus|lazy/)) {
+                verdict = "LATER_BASE";
+                style = "status-optimistic";
+                text = "You are reading this to avoid doing the actual thing. You'll probably start this resolution 'tomorrow'. Spoiler: Tomorrow never comes.";
+            }
+
             // --- PRIORITY 8: THE DAILY TRAP ---
             else if (input.includes("every day") || input.includes("everyday") || input.includes("daily")) {
                 verdict = "BURNOUT_DETECTED";
@@ -413,11 +448,28 @@
                 text = "Doing anything 'every day' is the fastest way to quit by January 12th. Professional athletes take rest days. You should too. Try '3 times a week'.";
             }
 
-            // --- CATEGORY: WAKE UP EARLY ---
-            else if (input.match(/5am|6am|7am|wake up|early|morning|alarm/)) {
+            // --- CATEGORY: BETTER SLEEP (Specific) ---
+            // Must be before "Wake Up" so "Sleep Early" doesn't clash
+            else if (input.match(/sleep early|fix sleep|bedtime|sleep schedule|insomnia/)) {
+                verdict = "GRANDMA_MODE";
+                style = "status-achievable";
+                text = "Going to bed at a reasonable hour? Finally, a resolution that doesn't involve suffering. Your dark circles are begging you to keep this one.";
+                fireConfetti = true;
+            }
+
+            // --- CATEGORY: WAKE UP EARLY (Generic) ---
+            // Removed standalone 'early' so "Sleep early" doesn't trigger this
+            else if (input.match(/5am|6am|7am|wake up|rise|morning|alarm/)) {
                 verdict = "SLEEP_DEBT_DETECTED";
                 style = "status-delusional";
                 text = "You'll feel like a god at 6 AM and a zombie by 2 PM. You aren't gaining more hours in the day; you're just shifting your scrolling time to before the sun comes up.";
+            }
+
+            // --- CATEGORY: GLOW UP ---
+            else if (input.match(/glow up|skincare|mewing|looksmax|wardrobe|style|fashion|haircut|pretty|handsome/)) {
+                verdict = "FRONTEND_UPDATE";
+                style = "status-optimistic";
+                text = "You can polish the frontend (your face), but the backend logic (your personality) still needs a rewrite. A haircut won't fix your trauma.";
             }
 
             // --- CATEGORY: DIET & WATER ---
@@ -427,7 +479,20 @@
                 text = "Hydration is key, but a ₹2000 water bottle isn't a personality trait. Also, we both know that 'No Sugar' rule expires the second you see a birthday cake.";
             }
 
-            // --- CATEGORY: TRAVEL ---
+            // --- CATEGORY: MOVING OUT ---
+            else if (input.match(/move out|apartment|flat|rent|own place|leave parents|roommate/)) {
+                verdict = "SUBSCRIPTION_TRAP";
+                style = "status-optimistic";
+                text = "Have you seen the economy? You are moving from a free bedroom to a monthly subscription service called 'Rent'. Enjoy paying for your own cheese.";
+            }
+
+            // --- CATEGORY: TRAVEL (SPECIFIC: GOA PLAN) ---
+            else if (input.match(/goa|trip with friends|group trip|ladakh/)) {
+                verdict = "GROUP_CHAT_SILENCE";
+                style = "status-delusional";
+                text = "A Goa plan? With those friends? We both know the group chat is going to go silent 3 days before the flight. Save the deposit money.";
+            }
+            // --- CATEGORY: TRAVEL (GENERIC) ---
             else if (input.match(/travel|trip|vacation|bali|europe|hike|world|explore/)) {
                 verdict = "ESCAPISM_DETECTED";
                 style = "status-optimistic";
@@ -463,8 +528,15 @@
                 text = "Reading is valid. Just make sure you're actually reading them, not just buying them to look intellectual on Zoom. One finished book beats ten half-started ones.";
             }
 
+            // --- CATEGORY: LANGUAGE (SPECIFIC: DUOLINGO) ---
+            // Fixed text to be generic (removed "Spanish")
+            else if (input.match(/spanish|french|german|japanese|duolingo|language/)) {
+                verdict = "STREAK_ANXIETY";
+                style = "status-achievable";
+                text = "The green owl is watching. Missing one lesson isn't just a failed streak, it's a personal threat to your family. Good luck.";
+            }
             // --- CATEGORY: GENERAL LEARNING ---
-            else if (input.match(/learn|study|degree|course|cook|skill|language|spanish|french|german/)) {
+            else if (input.match(/learn|study|degree|course|cook|skill/)) {
                 verdict = "WHOLESOME";
                 style = "status-achievable";
                 text = "Acquiring new data is always approved. Just make sure you actually apply the skill, rather than just hoarding the textbooks.";
@@ -472,7 +544,7 @@
             }
 
             // --- CATEGORY: MONEY & BUSINESS ---
-            else if (input.match(/\bsave\s*(\$|₹|rs|\d|money)|budget|spend|invest|rich|millionaire|hustle|stocks|dropshipping|financial/)) {
+            else if (input.match(/\bsave\s*(\$|₹|rs|\d|money)|budget|spend|invest|rich|millionaire|hustle|stocks|dropshipping|financial|buy|purchase|afford/)) {
                 verdict = "CHALLENGING";
                 style = "status-optimistic"; 
                 text = "Your bank account supports this goal, but your emotional support online shopping habits do not. Good luck fighting capitalism.";
@@ -486,20 +558,20 @@
                 fireConfetti = true;
             }
 
-            // --- CATEGORY: RELATIONSHIPS ---
-            else if (input.match(/date|dating|love|partner|my ex|boyfriend|girlfriend|marriage|wedding|propose|tinder|bumble|hinge|relationship/)) {
+            // --- CATEGORY: RELATIONSHIPS (SPECIFIC: SITUATIONSHIP) ---
+            else if (input.match(/situationship|crush|confess|ask (him|her) out|text (him|her)|talking stage/)) {
+                verdict = "UNDEFINED_VARIABLE";
+                style = "status-delusional";
+                text = "It’s not a relationship, it’s a 'situationship' because you're afraid of labels. Stop reading into their Instagram stories and just ask them out. Or block them.";
+            }
+            // --- CATEGORY: RELATIONSHIPS (GENERIC) ---
+            else if (input.match(/date|dating|love|partner|my ex|boyfriend|girlfriend|marriage|wedding|propose|tinder|bumble|hinge|relationship|\bbf\b|\bgf\b/)) {
                 verdict = "FOCUS_ON_YOU";
                 style = "status-achievable";
                 text = "2026 is for character development. Work on your own stats first—confidence, stability, hobbies. Player 2 joins when you're already winning.";
             }
 
-            // --- CATEGORY: SOCIAL MEDIA (SPLIT) ---
-            else if (input.match(/(delete|quit|uninstall|remove) (insta|gram|tiktok|facebook|twitter|x |snapchat|social|app)/)) {
-                verdict = "DOPAMINE_DETOX";
-                style = "status-achievable";
-                text = "Deleting the slot machine in your pocket? Bold move. Your attention span might actually recover. Enjoy the silence.";
-                fireConfetti = true;
-            }
+            // --- CATEGORY: SOCIAL MEDIA (GENERIC - Low Priority) ---
             else if (input.match(/social|insta|phone|screen|scroll|tiktok|reels|youtube|content|influencer|digital detox|screen time|\bapp\b/)) {
                 verdict = "IRONIC_DETECTED";
                 style = "status-optimistic";
